@@ -56,6 +56,12 @@ async function submitHandler(event) {
 
     if (currentPage * PER_PAGE < totalHits) {
       showLoadMoreButton();
+    } else {
+      hideLoadMoreButton();
+      iziToast.info({
+        message: "We're sorry, but you've reached the end of search results.",
+        position: 'topRight',
+      });
     }
   } catch (error) {
     iziToast.error({
@@ -73,6 +79,8 @@ loadMore.addEventListener('click', loadMoreHandler);
 
 async function loadMoreHandler() {
   currentPage++;
+  hideLoadMoreButton();
+  showLoader();
 
   try {
     const data = await getImagesByQuery(currentSearchQuery, currentPage);
@@ -104,5 +112,7 @@ async function loadMoreHandler() {
       position: 'topRight',
     });
     showLoadMoreButton();
+  } finally {
+    hideLoader();
   }
 }
